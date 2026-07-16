@@ -1,122 +1,83 @@
-# Dehasoft E-Ticaret Test Projesi
+# DehaSoft — Security-Focused E-Commerce Platform
 
-Bu proje, Dehasoft değerlendirme süreci kapsamında modern web mimarileri, API güvenliği ve sistem tasarımı prensiplerine uygun olarak geliştirilmiştir.
+This project is a full-stack e-commerce application developed in accordance with modern web architectures, API security standards, and secure system design principles.
 
-## 🏗️ Genel Mimari (Proxy & Isolation)
+## 🏗️ General Architecture (Proxy & Isolation)
 
-Proje, görselde belirtilen **zorunlu proxy mimarisi** üzerine kurulmuştur:
+The application is built on a **secure proxy isolation architecture**:
 
-- **Frontend (Next.js 14):** Kullanıcı arayüzü ve proxy katmanı olarak çalışır.
-- **Backend (Laravel 13):** Veri işleme ve API sağlama (JWT tabanlı) görevini üstlenir.
-- **Proxy Güvenliği:** Frontend uygulaması (client tarafı), Laravel backend'e asla doğrudan istek atmaz. Tüm iletişim Next.js API Route'ları üzerinden proxy edilerek gerçekleştirilir. Bu sayede API uç noktaları gizlenmiş ve doğrudan erişim engellenmiştir.
-- **Kimlik Doğrulama:** JWT token'lar, tarayıcı tarafında çalınmaya karşı en güvenli yöntem olan **httpOnly Cookie** içerisinde saklanır.
+- **Frontend (Next.js 14):** Serves as the user interface and the proxy controller.
+- **Backend (Laravel 13 / API):** Acts as the isolated API server handling data processing, database operations, and JWT-based authentication.
+- **Proxy Security Layer:** The client-side frontend never communicates directly with the Laravel API. All communications are proxied via Next.js API Routes. This hides backend API endpoints and prevents direct exposure.
+- **Authentication Security:** JWT tokens are stored in secure **httpOnly Cookies**, protecting them from client-side script theft (XSS).
 
 ---
 
-## ⚙️ Sistem Gereksinimleri
+## ✨ Features
 
-| Gereksinim | Sürüm |
+- **🔑 Secure Authentication**: Sign Up, Log In, Log Out using JWT and httpOnly Cookies.
+- **📦 Product Management**: Product listing, detailed views, and an admin CRUD panel.
+- **🛒 Shopping Cart**: Add, update quantities, remove items, and clear cart.
+- **💳 Order Management**: Place orders and view order history.
+- **📈 Exchange Rates**: Real-time USD and EUR exchange rate tracking via external API, displayed dynamically on the navigation bar.
+- **🗃️ Database**: Pre-configured with SQLite for instant setup, with seamless MySQL support.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies |
 |---|---|
-| PHP | 8.3+ |
-| Composer | 2.x |
-| Node.js | 18+ |
-| npm | 9+ |
-
-> **⚠️ Önemli (Windows Kullanıcıları):** `php` komutu Windows'ta çalışmıyorsa veya sahte bir stub ise, Herd vb. araçların kendi PHP yollarını kullanın.
+| **Frontend / Proxy** | Next.js 14, React, TypeScript, CSS |
+| **Backend / API** | Laravel 13, PHP, JWT (Tymon JWT) |
+| **Database** | SQLite (Default), MySQL |
+| **Testing** | Postman API Collections |
 
 ---
 
-## 🚀 Kurulum ve Çalıştırma
+## ⚙️ Local Development & Setup
 
-Proje, kurulum kolaylığı ve taşınabilirlik için varsayılan olarak **SQLite** ile yapılandırılmıştır. Herhangi bir veritabanı sunucusu kurulumu gerektirmeden çalıştırılabilir.
-
-### 1. Backend Hazırlığı (Laravel)
-
+### 1. Backend Setup (Laravel)
 ```bash
 cd backend
-```
-
-**Eğer PHP ortamınız doğru kuruluysa (Herd vb. olmadan standart kullanım):**
-```bash
 composer install
 php artisan key:generate
 php artisan jwt:secret
 php artisan migrate --seed
 php artisan serve --port=8000
 ```
+> The backend API will start at **http://127.0.0.1:8000**
 
-**Alternatif olarak (Windows'ta `php` komutu hata veriyorsa, Herd PHP yolunu kullanarak çalıştırılan komutlar):**
-```powershell
-# Composer bağımlılıklarını kur (Proje zaten kurulu haldedir)
-# C:\Users\<KULLANICI>\.config\herd\bin\php.bat C:\Users\<KULLANICI>\.config\herd\bin\composer.phar install
-
-# Sunucuyu başlat (8000 portunda çalıştırır)
-C:\Users\<KULLANICI>\.config\herd\bin\php.bat -S 127.0.0.1:8000 -t public
-```
-
-> Backend, **http://127.0.0.1:8000** adresinde çalışmaya başlayacaktır.
-
----
-
-### 2. Frontend Hazırlığı (Next.js)
-
-Yeni bir terminal açın:
-
+### 2. Frontend Setup (Next.js)
+Open a new terminal:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-
-Uygulama tarayıcınızda **http://localhost:3000** adresinde çalışmaya başlayacaktır.
-
----
-
-## 💡 Veritabanı Notu (MySQL Desteği)
-
-Proje şu an SQLite üzerinde çalışmaktadır. İstenildiği takdirde `backend/.env` dosyasındaki ilgili alanlar MySQL bilgilerine göre düzenlenip `php artisan migrate` komutu çalıştırılarak MySQL'e saniyeler içinde geçiş yapılabilir.
-
-```dotenv
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=dehasoft
-DB_USERNAME=root
-DB_PASSWORD=
-```
+> The application UI will start at **http://localhost:3000**
 
 ---
 
-## ✅ Tamamlanan Özellikler
-
-- **Kullanıcı Yönetimi:** Kayıt ol, Giriş yap, Çıkış yap (JWT & Secure Cookie).
-- **Ürün Yönetimi:** Ürün listeleme, detay görüntüleme ve admin paneli üzerinden CRUD (Ekle/Sil/Güncelle) işlemleri.
-- **Sepet Sistemi:** Ürün ekleme, miktar güncelleme, ürün silme ve sepeti temizleme.
-- **Sipariş Sistemi:** Sepetteki ürünlerle sipariş oluşturma ve sipariş geçmişi görüntüleme.
-- **Döviz Kuru:** Harici API entegrasyonu ile USD ve EUR kurlarının **anlık** (her dakika güncellenen) takibi ve Navbar üzerinden gösterimi.
-
----
-
-## 📦 API Dokümantasyonu
-
-Proje kök dizinindeki `Postman` klasöründe bulunan `Dehasoft_API_Postman.json` dosyasını Postman’e içeri aktararak tüm API uç noktalarını inceleyebilirsiniz. Ayrıca oluşturulan PDF dosyası üzerinden Postman test çıktılarının ekran görüntülerine ulaşabilirsiniz.
-
----
-
-## 🗂️ Proje Yapısı
+## 📂 Project Structure
 
 ```
 dehasoft-ecommerce/
 ├── backend/          # Laravel API (PHP)
 │   ├── app/
 │   ├── database/
-│   │   └── database.sqlite   # Çalışır durumdaki SQLite veritabanı
+│   │   └── database.sqlite   # SQLite database
 │   ├── routes/api.php
 │   └── .env
-├── frontend/         # Next.js (Proxy katmanı)
+├── frontend/         # Next.js (Proxy Layer)
 │   ├── src/
 │   │   ├── app/
 │   │   └── components/
 │   └── .env.local
 └── Dehasoft_API_Postman.json
 ```
+
+---
+
+## 📄 License
+This project is open-source and available under the [MIT License](LICENSE).
